@@ -35,7 +35,22 @@ export async function POST(request) {
     }
 
     // 解析请求体
-    const body = await request.json().catch(() => ({}));
+    // const body = await request.json().catch(() => ({}));
+    // 解析请求体（带数据清洗，处理 Base64 中的换行符等）
+    let body = {};
+    try {
+      const text = await request.text();
+      // 清洗：移除非标准 JSON 控制字符和换行符
+      const cleaned = text
+        .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, '') // 移除非标准控制字符
+        .replace(/\n/g, '')     // 移除换行符
+        .replace(/\r/g, '')     // 移除回车符
+        .trim();
+      body = JSON.parse(cleaned);
+    } catch (e) {
+      console.error('JSON parse error:', e.message);
+      body = {};
+    }
     const { prompt = '', size = '2K', image = [] } = body;
 
     if (!prompt) {
