@@ -34,19 +34,13 @@ export async function POST(request) {
       return createResponse(401, { code: 401, message: '鉴权失败' });
     }
 
-    return createResponse(200, {
-      code: 200,
-      data: '888',
-      message: '调用成功',
-    });
-
     // 解析请求体
-    // const body = await request.json().catch(() => ({}));
-    // const { prompt = '', size = '2K', image = [] } = body;
+    const body = await request.json().catch(() => ({}));
+    const { prompt = '', size = '2K', image = [] } = body;
 
-    // if (!prompt) {
-    //   return createResponse(400, { code: 400, error: 'prompt 不能为空' });
-    // }
+    if (!prompt) {
+      return createResponse(400, { code: 400, error: 'prompt 不能为空' });
+    }
 
     // 调用生图 API
     // const response = await client.images.generate({
@@ -59,11 +53,11 @@ export async function POST(request) {
     //   sequential_image_generation: 'disabled',
     // });
 
-    // return createResponse(200, {
-    //   code: 200,
-    //   data: response.data[0]?.b64_json,
-    //   message: '调用成功',
-    // });
+    return createResponse(200, {
+      code: 200,
+      data: '888',
+      message: '调用成功',
+    });
   } catch (error) {
     console.error('图片生成错误:', error);
     return createResponse(500, {
