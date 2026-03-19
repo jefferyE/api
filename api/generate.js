@@ -30,14 +30,14 @@ export async function POST(request) {
   try {
     // 鉴权验证
     const clientToken = request.headers.get('x-auth-token') || request.headers.get('X-Auth-Token');
+    if (!API_AUTH_TOKEN || clientToken !== API_AUTH_TOKEN) {
+      return createResponse(401, { code: 401, message: '鉴权失败' });
+    }
         return createResponse(200, {
       code: 200,
       data: '888',
       message: '调用成功',
     });
-    if (!API_AUTH_TOKEN || clientToken !== API_AUTH_TOKEN) {
-      return createResponse(401, { code: 401, message: '鉴权失败' });
-    }
 
     // 解析请求体
     const body = await request.json().catch(() => ({}));
