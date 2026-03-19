@@ -34,23 +34,24 @@ export async function POST(request) {
       return createResponse(401, { code: 401, message: '鉴权失败' });
     }
 
-    // 解析 FormData 请求体
-    const formData = await request.formData();
-    const prompt = formData.get('prompt') || '';
-    const size = formData.get('size') || '2K';
-
-    // 处理 image 字段（可能是 JSON 字符串或多个值）
-    let image = [];
-    const imageValue = formData.get('image');
-    if (imageValue) {
-      try {
-        image = JSON.parse(imageValue);
-      } catch {
-        // 如果不是 JSON，尝试获取所有 image 字段
-        const images = formData.getAll('image');
-        image = images.filter(v => v);
-      }
+    // 解析请求体
+    // const body = await request.json().catch(() => ({}));
+    // 解析请求体（带数据清洗，处理 Base64 中的换行符等）
+    let body = {};
+    try {
+      const text = await request.text();
+      // 清洗：移除非标准 JSON 控制字符和换行符
+      const cleaned = text
+        .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, '') // 移除非标准控制字符
+        .replace(/\n/g, '')     // 移除换行符
+        .replace(/\r/g, '')     // 移除回车符
+        .trim();
+      body = JSON.parse(cleaned);
+    } catch (e) {
+      console.error('JSON parse error:', e.message);
+      body = {};
     }
+    const { prompt = '', size = '2K', image = [] } = body;
 
     if (!prompt) {
       return createResponse(400, { code: 400, error: 'prompt 不能为空' });
