@@ -36,11 +36,6 @@ export async function POST(request) {
 
     // 解析请求体
     const body = await request.json().catch(() => ({}));
-    return createResponse(200, {
-      code: 200,
-      data: '888',
-      message: '调用成功',
-    });
     const { prompt = '', size = '2K', image = [] } = body;
 
     if (!prompt) {
