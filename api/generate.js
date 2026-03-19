@@ -47,6 +47,8 @@ export async function POST(request) {
       imageFilesCount: imageFiles?.length 
     });
 
+    console.log('imageFilesCount[0[]:', imageFilesCount[0]);
+
     if (!prompt) {
       return createResponse(400, { code: 400, error: 'prompt 不能为空' });
     }
