@@ -38,40 +38,19 @@ export async function POST(request) {
     const formData = await request.formData();
 
     const prompt = formData.get('prompt') || '';
-    const imageFiles = formData.getAll('image');
+    const image = formData.getAll('image');
     const size = formData.get('size') || '2K';
 
-    console.log('[generate] Params:', { 
+    console.log('[generate] Params:', {
       prompt: prompt?.slice(0, 50) + (prompt?.length > 50 ? '...' : ''), 
+      image: image[0]?.slice(0, 30) + '...',
+      imageLen: image?.length,
       size,
-      imageFilesCount: imageFiles?.length 
     });
-
-    // console.log('imageFilesCount[0[]:', imageFilesCount[0]);
 
     if (!prompt) {
       return createResponse(400, { code: 400, error: 'prompt 不能为空' });
     }
-
-    let image = [];
-    for (const file of imageFiles) {
-       if (file?.arrayBuffer && typeof file.arrayBuffer === 'function') {
-        // 读取文件并转为 base64
-        const bytes = await file.arrayBuffer();
-        const base64 = Buffer.from(bytes).toString('base64');
-        // 根据文件类型添加 data URI 前缀
-        const mimeType = file.type || 'image/jpeg';
-        image.push(`data:${mimeType};base64,${base64}`);
-      }
-    }
-
-    console.log('[generate] Calling API:', { 
-      prompt: prompt?.slice(0, 50) + '...', 
-      size,
-      imageCount: image?.length
-    });
-
-    console.log('image[0[]:', image[0]?.slice(0, 30) + '...');
 
     // 调用生图 API
     const response = await client.images.generate({
@@ -84,8 +63,8 @@ export async function POST(request) {
       sequential_image_generation: 'disabled',
     });
 
-    console.log('[generate] Success, response length:', response.data[0]?.b64_json?.length);
-    
+    console.log('[call] Success, Response data:', response.data);
+
     return createResponse(200, {
       code: 200,
       data: response.data[0]?.b64_json,
