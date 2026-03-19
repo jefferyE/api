@@ -39,20 +39,20 @@ export async function POST(request) {
 
     const prompt = formData.get('prompt') || '';
     const size = formData.get('size') || '2K';
-    return createResponse(406, { code: 406, message: '不支持的请求格式' });
+    // return createResponse(406, { code: 406, message: '不支持的请求格式' });
 
     // 处理 image 字段（可能是 JSON 字符串或多个值）
-    let image = [];
-    const imageValue = formData.get('image');
-    if (imageValue) {
-      try {
-        image = JSON.parse(imageValue);
-      } catch {
-        // 如果不是 JSON，尝试获取所有 image 字段
-        const images = formData.getAll('image');
-        image = images.filter(v => v);
-      }
-    }
+    // let image = [];
+    // const imageValue = formData.get('image');
+    // if (imageValue) {
+    //   try {
+    //     image = JSON.parse(imageValue);
+    //   } catch {
+    //     // 如果不是 JSON，尝试获取所有 image 字段
+    //     const images = formData.getAll('image');
+    //     image = images.filter(v => v);
+    //   }
+    // }
 
     if (!prompt) {
       return createResponse(400, { code: 400, error: 'prompt 不能为空' });
