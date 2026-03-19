@@ -36,6 +36,7 @@ export async function POST(request) {
 
     // 解析 FormData 请求体
     const formData = await request.formData();
+    return createResponse(200, { code: 200, message: '鉴权失败' });
     const prompt = formData.get('prompt') || '';
     const size = formData.get('size') || '2K';
 
