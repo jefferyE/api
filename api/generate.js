@@ -34,14 +34,14 @@ export async function POST(request) {
       return createResponse(401, { code: 401, message: '鉴权失败' });
     }
 
-    return createResponse(200, { code: 200, message: '鉴权失败' });
-
     // 解析 FormData 请求体
     const formData = await request.formData();
 
     const prompt = formData.get('prompt') || '';
     const image = formData.getAll('image');
     const size = formData.get('size') || '2K';
+        return createResponse(200, { code: 200, message: '鉴权失败' });
+
 
     console.log('[generate] Params:', {
       prompt: prompt,
