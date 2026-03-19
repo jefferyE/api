@@ -68,7 +68,9 @@ export async function POST(request) {
       size,
       imageCount: image?.length
     });
-    
+
+    console.log('image[0[]:', image[0]?.slice(0, 30) + '...');
+
     // 调用生图 API
     const response = await client.images.generate({
       model: 'doubao-seedream-4-5-251128',
