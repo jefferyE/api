@@ -35,8 +35,8 @@ export async function POST(request) {
     }
 
     // 解析 FormData 请求体
-    return createResponse(406, { code: 406, message: '不支持的请求格式' });
     const formData = await request.formData();
+    return createResponse(406, { code: 406, message: '不支持的请求格式' });
     
     const prompt = formData.get('prompt') || '';
     const size = formData.get('size') || '2K';
