@@ -42,9 +42,9 @@ export async function POST(request) {
     const size = formData.get('size') || '2K';
 
     console.log('[generate] Params:', {
-      prompt: prompt?.slice(0, 50) + (prompt?.length > 50 ? '...' : ''), 
-      image: image[0]?.slice(0, 30) + '...',
-      imageLen: image?.length,
+      prompt: prompt,
+      image: image,
+      imageLength: image?.length,
       size,
     });
 
