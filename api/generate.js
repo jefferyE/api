@@ -38,12 +38,15 @@ export async function POST(request) {
     const formData = await request.formData();
 
     const prompt = formData.get('prompt') || '';
-    const size = formData.get('size') || '2K';
-    // return createResponse(406, { code: 406, message: '不支持的请求格式' });
-
-    // 处理 image 字段（可能是 JSON 字符串或多个值）
-    let image = [];
     const imageFiles = formData.getAll('image');
+    const size = formData.get('size') || '2K';
+
+    
+    if (!prompt) {
+      return createResponse(400, { code: 400, error: 'prompt 不能为空' });
+    }
+
+    let image = [];
     for (const file of imageFiles) {
       if (file instanceof File) {
         // 读取文件并转为 base64
@@ -53,10 +56,6 @@ export async function POST(request) {
         const mimeType = file.type || 'image/jpeg';
         image.push(`data:${mimeType};base64,${base64}`);
       }
-    }
-
-    if (!prompt) {
-      return createResponse(400, { code: 400, error: 'prompt 不能为空' });
     }
 
     // 调用生图 API
