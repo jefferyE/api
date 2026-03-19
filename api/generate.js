@@ -30,14 +30,14 @@ export async function POST(request) {
   try {
     // 鉴权验证
     const clientToken = request.headers.get('x-auth-token') || request.headers.get('X-Auth-Token');
-    if (!API_AUTH_TOKEN || clientToken !== API_AUTH_TOKEN) {
-      return createResponse(401, { code: 401, message: '鉴权失败' });
-    }
-    return createResponse(200, {
+        return createResponse(200, {
       code: 200,
       data: '888',
       message: '调用成功',
     });
+    if (!API_AUTH_TOKEN || clientToken !== API_AUTH_TOKEN) {
+      return createResponse(401, { code: 401, message: '鉴权失败' });
+    }
 
     // 解析请求体
     const body = await request.json().catch(() => ({}));
@@ -48,21 +48,21 @@ export async function POST(request) {
     }
 
     // 调用生图 API
-    // const response = await client.images.generate({
-    //   model: 'doubao-seedream-4-5-251128',
-    //   prompt: prompt,
-    //   image: image,
-    //   watermark: false,
-    //   size: size,
-    //   response_format: 'b64_json',
-    //   sequential_image_generation: 'disabled',
-    // });
+    const response = await client.images.generate({
+      model: 'doubao-seedream-4-5-251128',
+      prompt: prompt,
+      image: image,
+      watermark: false,
+      size: size,
+      response_format: 'b64_json',
+      sequential_image_generation: 'disabled',
+    });
 
-    // return createResponse(200, {
-    //   code: 200,
-    //   data: response.data[0]?.b64_json,
-    //   message: '调用成功',
-    // });
+    return createResponse(200, {
+      code: 200,
+      data: response.data[0]?.b64_json,
+      message: '调用成功',
+    });
   } catch (error) {
     console.error('图片生成错误:', error);
     return createResponse(500, {
