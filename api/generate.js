@@ -55,7 +55,7 @@ export async function POST(request) {
 
     let image = [];
     for (const file of imageFiles) {
-      if (file instanceof File) {
+       if (file?.arrayBuffer && typeof file.arrayBuffer === 'function') { {
         // 读取文件并转为 base64
         const bytes = await file.arrayBuffer();
         const base64 = Buffer.from(bytes).toString('base64');
