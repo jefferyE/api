@@ -33,6 +33,11 @@ export async function POST(request) {
     if (!API_AUTH_TOKEN || clientToken !== API_AUTH_TOKEN) {
       return createResponse(401, { code: 401, message: '鉴权失败' });
     }
+    return createResponse(200, {
+      code: 200,
+      data: '888',
+      message: '调用成功',
+    });
 
     // 解析请求体
     const body = await request.json().catch(() => ({}));
@@ -53,11 +58,11 @@ export async function POST(request) {
     //   sequential_image_generation: 'disabled',
     // });
 
-    return createResponse(200, {
-      code: 200,
-      data: '888',
-      message: '调用成功',
-    });
+    // return createResponse(200, {
+    //   code: 200,
+    //   data: response.data[0]?.b64_json,
+    //   message: '调用成功',
+    // });
   } catch (error) {
     console.error('图片生成错误:', error);
     return createResponse(500, {
