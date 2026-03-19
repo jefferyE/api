@@ -36,12 +36,13 @@ export async function POST(request) {
 
     // 解析 FormData 请求体
     const formData = await request.formData();
+        return createResponse(200, { code: 200, message: '鉴权失败' });
+
 
     const prompt = formData.get('prompt') || '';
     const image = formData.getAll('image');
     const size = formData.get('size') || '2K';
-        return createResponse(200, { code: 200, message: '鉴权失败' });
-
+    
 
     console.log('[generate] Params:', {
       prompt: prompt,
