@@ -34,6 +34,8 @@ export async function POST(request) {
       return createResponse(401, { code: 401, message: '鉴权失败' });
     }
 
+    return createResponse(200, { code: 200, message: '鉴权失败' });
+
     // 解析 FormData 请求体
     const formData = await request.formData();
 
