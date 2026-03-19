@@ -47,7 +47,7 @@ export async function POST(request) {
       imageFilesCount: imageFiles?.length 
     });
 
-    console.log('imageFilesCount[0[]:', imageFilesCount[0]);
+    // console.log('imageFilesCount[0[]:', imageFilesCount[0]);
 
     if (!prompt) {
       return createResponse(400, { code: 400, error: 'prompt 不能为空' });
@@ -55,7 +55,7 @@ export async function POST(request) {
 
     let image = [];
     for (const file of imageFiles) {
-       if (file?.arrayBuffer && typeof file.arrayBuffer === 'function') { {
+       if (file?.arrayBuffer && typeof file.arrayBuffer === 'function') {
         // 读取文件并转为 base64
         const bytes = await file.arrayBuffer();
         const base64 = Buffer.from(bytes).toString('base64');

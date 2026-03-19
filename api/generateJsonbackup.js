@@ -36,36 +36,22 @@ export async function POST(request) {
 
     // 解析请求体
     // const body = await request.json().catch(() => ({}));
-    // 解析请求体（先提取image字段，再解析剩余JSON）
+    // 解析请求体（带数据清洗，处理 Base64 中的换行符等）
     let body = {};
-    let imageValue = [];
     try {
       const text = await request.text();
-
-      // 先提取image字段的值（支持字符串或数组格式）
-      const imageMatch = text.match(/"image"\s*:\s*(?:"([^"]*)"|(\[[\s\S]*?\]))/);
-      if (imageMatch) {
-        try {
-          imageValue = imageMatch[2] ? JSON.parse(imageMatch[2]) : imageMatch[1];
-        } catch {
-          imageValue = imageMatch[1] || [];
-        }
-      }
-
-      // 移除image字段后再解析JSON
-      const withoutImage = text.replace(/,"image"\s*:\s*(?:"[^"]*"|\[[\s\S]*?\])/g, '').replace(/"image"\s*:\s*(?:"[^"]*"|\[[\s\S]*?\]),?/g, '');
-      const cleaned = withoutImage
-        .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, '')
-        .replace(/\n/g, '')
-        .replace(/\r/g, '')
+      // 清洗：移除非标准 JSON 控制字符和换行符
+      const cleaned = text
+        .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, '') // 移除非标准控制字符
+        .replace(/\n/g, '')     // 移除换行符
+        .replace(/\r/g, '')     // 移除回车符
         .trim();
-
       body = JSON.parse(cleaned);
     } catch (e) {
       console.error('JSON parse error:', e.message);
       body = {};
     }
-    const { prompt = '', size = '2K' } = body;
+    const { prompt = '', size = '2K', image = [] } = body;
 
     if (!prompt) {
       return createResponse(400, { code: 400, error: 'prompt 不能为空' });
