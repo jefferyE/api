@@ -43,14 +43,15 @@ export async function POST(request) {
 
     // 处理 image 字段（可能是 JSON 字符串或多个值）
     let image = [];
-    const imageValue = formData.get('image');
-    if (imageValue) {
-      try {
-        image = JSON.parse(imageValue);
-      } catch {
-        // 如果不是 JSON，尝试获取所有 image 字段
-        const images = formData.getAll('image');
-        image = images.filter(v => v);
+    const imageFiles = formData.getAll('image');
+    for (const file of imageFiles) {
+      if (file instanceof File) {
+        // 读取文件并转为 base64
+        const bytes = await file.arrayBuffer();
+        const base64 = Buffer.from(bytes).toString('base64');
+        // 根据文件类型添加 data URI 前缀
+        const mimeType = file.type || 'image/jpeg';
+        image.push(`data:${mimeType};base64,${base64}`);
       }
     }
 
