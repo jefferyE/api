@@ -41,7 +41,12 @@ export async function POST(request) {
     const imageFiles = formData.getAll('image');
     const size = formData.get('size') || '2K';
 
-    
+    console.log('[generate] Params:', { 
+      prompt: prompt?.slice(0, 50) + (prompt?.length > 50 ? '...' : ''), 
+      size,
+      imageFilesCount: imageFiles?.length 
+    });
+
     if (!prompt) {
       return createResponse(400, { code: 400, error: 'prompt 不能为空' });
     }
@@ -58,6 +63,12 @@ export async function POST(request) {
       }
     }
 
+    console.log('[generate] Calling API:', { 
+      prompt: prompt?.slice(0, 50) + '...', 
+      size,
+      imageCount: image?.length
+    });
+    
     // 调用生图 API
     const response = await client.images.generate({
       model: 'doubao-seedream-4-5-251128',
@@ -69,6 +80,8 @@ export async function POST(request) {
       sequential_image_generation: 'disabled',
     });
 
+    console.log('[generate] Success, response length:', response.data[0]?.b64_json?.length);
+    
     return createResponse(200, {
       code: 200,
       data: response.data[0]?.b64_json,
