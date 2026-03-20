@@ -65,10 +65,12 @@ async function getTransaction(transactionId) {
     const result = await fetchTransaction(transactionId, true);
     return { ...result, environment: 'Sandbox' };
   } catch (error) {
+    console.log('查询交易失败:', error);
     // 210050001 表示环境不匹配，尝试生产环境
     if (error.message.includes('210050001')) {
       console.log('沙盒环境查不到，尝试生产环境');
       const result = await fetchTransaction(transactionId, false);
+      console.log('生产环境查询成功:', result);
       return { ...result, environment: 'Production' };
     }
     throw error;
