@@ -173,7 +173,7 @@ export async function POST(request) {
     // 参数校验
     if (!transactionId) {
       return NextResponse.json(
-        { success: false, message: '缺少交易ID(transactionId)' },
+        { code: 400, message: '缺少交易ID(transactionId)' },
         { status: 400 }
       );
     }
@@ -190,7 +190,7 @@ export async function POST(request) {
 
     if (!transactionInfo) {
       return NextResponse.json(
-        { success: false, message: '解析交易信息失败' },
+        { code: 500, message: '解析交易信息失败' },
         { status: 500 }
       );
     }
@@ -200,7 +200,7 @@ export async function POST(request) {
       // 非消耗型和消耗型商品：检查 inAppOwnershipType
       if (transactionInfo.inAppOwnershipType !== 'PURCHASED') {
         return NextResponse.json(
-          { success: false, message: '交易所有权类型不正确', inAppOwnershipType: transactionInfo.inAppOwnershipType },
+          { code: 400, message: '交易所有权类型不正确', inAppOwnershipType: transactionInfo.inAppOwnershipType },
           { status: 400 }
         );
       }
@@ -208,7 +208,7 @@ export async function POST(request) {
       // 验证商品ID
       if (productId && productId !== transactionInfo.productId) {
         return NextResponse.json(
-          { success: false, message: '商品ID不匹配', expected: productId, actual: transactionInfo.productId },
+          { code: 400, message: '商品ID不匹配', expected: productId, actual: transactionInfo.productId },
           { status: 400 }
         );
       }
@@ -267,7 +267,7 @@ export async function POST(request) {
 
     // 返回成功响应
     return NextResponse.json({
-      success: true,
+      code: 200,
       message: '支付验证成功',
       data: {
         orderInfo,
@@ -284,12 +284,12 @@ export async function POST(request) {
           inAppOwnershipType: transactionInfo.inAppOwnershipType
         }
       }
-    });
+    }, { status: 200 });
 
   } catch (error) {
     console.error('苹果支付验证错误:', error);
     return NextResponse.json(
-      { success: false, message: '服务器内部错误', error: error.message },
+      { code: 500, message: '服务器内部错误', error: error.message },
       { status: 500 }
     );
   }
