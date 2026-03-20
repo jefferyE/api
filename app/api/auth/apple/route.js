@@ -74,7 +74,7 @@ const verifyAppleIdentityToken = async (identityToken) => {
       }
     };
   } catch (error) {
-    console.error('苹果登录验证错误:', error.name, error.message);
+    console.log('苹果登录验证错误:', error.name, error.message);
     if (error.name === 'TokenExpiredError') return { valid: false, error: 'Token 已过期' };
     if (error.name === 'JsonWebTokenError') {
       let detail = error.message;
@@ -140,7 +140,7 @@ export async function POST(request) {
       email: result.data.email,
     });
   } catch (error) {
-    console.error('苹果登录处理错误:', error);
+    console.log('苹果登录处理错误:', error);
     return createResponse(500, {
       code: 500,
       message: error.message || '服务器错误',

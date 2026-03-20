@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 
+
+const API_AUTH_PASSWORD = process.env.API_AUTH_PASSWORD || '72311a6dee7f4869aa634fff914d25c1'
+
 // 苹果验证服务器地址
 const APPLE_VERIFY_URL = {
   production: 'https://buy.itunes.apple.com/verifyReceipt',
@@ -75,17 +78,17 @@ function parseVerifyResult(verifyResult) {
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { 
-      receipt, 
-      password, 
+    const {
+      receiptData: receipt,
       isSandbox = false,
       transactionId,
       productId,
-      userId
     } = body;
+    console.log('POST /api/auth/pay', body);
 
     // 参数校验
     if (!receipt) {
+      console.log('Missing receipt in request body');
       return NextResponse.json(
         { success: false, message: '缺少支付凭证(receipt)' },
         { status: 400 }
@@ -93,6 +96,7 @@ export async function POST(request) {
     }
 
     if (!transactionId) {
+      console.log('Missing transactionId in request body');
       return NextResponse.json(
         { success: false, message: '缺少交易ID(transactionId)' },
         { status: 400 }
@@ -102,8 +106,10 @@ export async function POST(request) {
     // 调用苹果验证服务器
     let verifyResult;
     try {
-      verifyResult = await verifyReceipt(receipt, password, isSandbox);
+      verifyResult = await verifyReceipt(receipt, API_AUTH_PASSWORD, isSandbox);
+      console.log('Apple receipt verification result:', verifyResult);
     } catch (error) {
+      console.log('Error verifying receipt with Apple:', error);
       return NextResponse.json(
         { success: false, message: '苹果服务器验证失败', error: error.message },
         { status: 502 }
@@ -116,9 +122,10 @@ export async function POST(request) {
     // 如果状态码为21007，说明是沙盒环境receipt，自动切换到沙盒重试
     if (result.status === 21007 && !isSandbox) {
       try {
-        verifyResult = await verifyReceipt(receipt, password, true);
+        verifyResult = await verifyReceipt(receipt, API_AUTH_PASSWORD, true);
         Object.assign(result, parseVerifyResult(verifyResult));
       } catch (error) {
+        console.log('Error verifying receipt with Apple (sandbox):', error);
         return NextResponse.json(
           { success: false, message: '沙盒环境验证失败', error: error.message },
           { status: 502 }
@@ -128,6 +135,7 @@ export async function POST(request) {
 
     // 验证失败
     if (!result.isValid) {
+      console.log('Invalid receipt:', result.message);
       return NextResponse.json(
         { 
           success: false, 
@@ -146,11 +154,26 @@ export async function POST(request) {
     );
 
     if (!matchedTransaction) {
+      console.log('Transaction ID not found in receipt:', transactionId);
       return NextResponse.json(
-        { 
-          success: false, 
+        {
+          success: false,
           message: '交易ID不匹配，可能存在异常',
           status: -1
+        },
+        { status: 400 }
+      );
+    }
+
+    // 验证商品ID是否匹配
+    if (productId && productId !== matchedTransaction.product_id) {
+      console.log(`Product ID mismatch: expected ${productId}, got ${matchedTransaction.product_id}`);
+      return NextResponse.json(
+        {
+          success: false,
+          message: '商品ID不匹配',
+          expected: productId,
+          actual: matchedTransaction.product_id
         },
         { status: 400 }
       );
@@ -165,7 +188,6 @@ export async function POST(request) {
       transactionId: matchedTransaction.transaction_id,
       originalTransactionId: matchedTransaction.original_transaction_id,
       productId: matchedTransaction.product_id,
-      userId: userId || null,
       quantity: parseInt(matchedTransaction.quantity) || 1,
       purchaseDate: new Date(parseInt(matchedTransaction.purchase_date_ms)).toISOString(),
       expiresDate: matchedTransaction.expires_date_ms 
@@ -195,7 +217,7 @@ export async function POST(request) {
     });
 
   } catch (error) {
-    console.error('苹果支付验证错误:', error);
+    console.log('苹果支付验证错误:', error);
     return NextResponse.json(
       { success: false, message: '服务器内部错误', error: error.message },
       { status: 500 }

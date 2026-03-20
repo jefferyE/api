@@ -74,7 +74,7 @@ export async function POST(request) {
       message: '调用成功',
     });
   } catch (error) {
-    console.error('图片生成错误:', error);
+    console.log('图片生成错误:', error);
     return createResponse(500, {
       code: 500,
       message: error.message || '图片生成失败',
