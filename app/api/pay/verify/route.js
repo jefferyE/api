@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 
 // App Store Connect API 配置
-const APPLE_STORE_KIT_BASE_URL = '';
-const APPLE_STORE_KIT_SANDBOX_URL = '';
+const APPLE_STORE_KIT_BASE_URL = process.env.APPLE_STORE_KIT_BASE_URL || '';
+const APPLE_STORE_KIT_SANDBOX_URL = process.env.APPLE_STORE_KIT_SANDBOX_URL || '';
 
 const KEY_ID = process.env.APPLE_KEY_ID || '';
 const ISSUER_ID = process.env.APPLE_ISSUER_ID || '';
