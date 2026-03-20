@@ -3,11 +3,11 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 
 // 环境变量
-const API_AUTH_TOKEN = process.env.API_AUTH_TOKEN || 'xsd1dfd8caa-d7fc-4c7d-b4a1-5bf3c21bf168';
-const JWT_SECRET = process.env.JWT_SECRET || 'o9Kqhg4uCVQufgrXRS8bSEXMzjVOx5Wp/upX6PZlxbA=';
-const APPLE_PUBLIC_KEYS_URL = process.env.APPLE_PUBLIC_KEYS_URL || 'https://appleid.apple.com/auth/keys';
-const APPLE_ISSUER = process.env.APPLE_ISSUER || 'https://appleid.apple.com';
-const APPLE_BUNDLE_ID = process.env.APPLE_BUNDLE_ID || 'com.mirror.BabyPic';
+const API_AUTH_TOKEN = process.env.API_AUTH_TOKEN || '';
+const JWT_SECRET = process.env.JWT_SECRET || '';
+const APPLE_PUBLIC_KEYS_URL = process.env.APPLE_PUBLIC_KEYS_URL || '';
+const APPLE_ISSUER = process.env.APPLE_ISSUER || '';
+const APPLE_BUNDLE_ID = process.env.APPLE_BUNDLE_ID || '';
 
 // 统一响应处理
 const createResponse = (statusCode, data) => {

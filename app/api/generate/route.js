@@ -2,9 +2,9 @@ import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
 // 环境变量
-const API_AUTH_TOKEN = process.env.API_AUTH_TOKEN || 'xsd1dfd8caa-d7fc-4c7d-b4a1-5bf3c21bf168';
-const SEEDREAM_API_BASE_URL = process.env.SEEDREAM_API_BASE_URL || 'https://ark.cn-beijing.volces.com/api/v3';
-const SEEDREAM_API_KEY = process.env.SEEDREAM_API_KEY || '1dfd8caa-d7fc-4c7d-b4a1-5bf3c21bf168';
+const API_AUTH_TOKEN = process.env.API_AUTH_TOKEN || '';
+const SEEDREAM_API_BASE_URL = process.env.SEEDREAM_API_BASE_URL || '';
+const SEEDREAM_API_KEY = process.env.SEEDREAM_API_KEY || '';
 
 // OpenAI 实例
 const client = new OpenAI({
