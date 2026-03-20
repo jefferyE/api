@@ -2,9 +2,9 @@ import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
 // 环境变量
-const API_AUTH_TOKEN = process.env.API_AUTH_TOKEN || '';
-const SEEDREAM_API_BASE_URL = process.env.SEEDREAM_API_BASE_URL || '';
-const SEEDREAM_API_KEY = process.env.SEEDREAM_API_KEY || '';
+const API_AUTH_TOKEN = process.env.API_AUTH_TOKEN || 'xsd1dfd8caa-d7fc-4c7d-b4a1-5bf3c21bf168';
+const SEEDREAM_API_BASE_URL = process.env.SEEDREAM_API_BASE_URL || 'https://ark.cn-beijing.volces.com/api/v3';
+const SEEDREAM_API_KEY = process.env.SEEDREAM_API_KEY || '1dfd8caa-d7fc-4c7d-b4a1-5bf3c21bf168';
 
 // OpenAI 实例
 const client = new OpenAI({
@@ -27,15 +27,18 @@ const createResponse = (statusCode, data) => {
 
 // 处理 POST 请求
 export async function POST(request) {
+  console.log('[generate] Request:', request);
   try {
     // 鉴权验证
     const clientToken = request.headers.get('x-auth-token') || request.headers.get('X-Auth-Token');
     if (!API_AUTH_TOKEN || clientToken !== API_AUTH_TOKEN) {
       return createResponse(401, { code: 401, message: '鉴权失败' });
     }
+    console.log('Received POST /generate');
 
     // 解析 FormData 请求体
     const formData = await request.formData();
+    console.log('[generate] FormData:', formData);
 
     const prompt = formData.get('prompt') || '';
     const image = formData.getAll('image');
