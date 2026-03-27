@@ -1,1 +1,11 @@
-{}
+{
+  "functions": {
+    "api/generate": {
+      "maxDuration": 60,
+      "runtime": "@vercel/node@3"
+    }
+  },
+  "env": {
+    "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+  }
+}
