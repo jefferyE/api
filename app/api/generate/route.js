@@ -1,5 +1,12 @@
 import { NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import https from 'https';
+
+// 全局加速 HTTPS 请求（关键！）
+const httpsAgent = new https.Agent({
+  keepAlive: true,
+  rejectUnauthorized: false
+});
 
 // 环境变量
 const API_AUTH_TOKEN = process.env.API_AUTH_TOKEN || '';
@@ -10,6 +17,7 @@ const SEEDREAM_API_KEY = process.env.SEEDREAM_API_KEY || '';
 const client = new OpenAI({
   baseURL: SEEDREAM_API_BASE_URL,
   apiKey: SEEDREAM_API_KEY,
+  httpAgent: httpsAgent, // 关键：给 SDK 传入 agent
 });
 
 // 统一响应处理
