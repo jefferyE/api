@@ -69,7 +69,7 @@ export async function POST(request) {
       prompt: prompt,
       image: image,
       watermark: false,
-      size: size,
+      size: '2K',
       response_format: 'b64_json',
       sequential_image_generation: 'disabled',
     });
