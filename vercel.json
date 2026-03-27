@@ -1,8 +1,7 @@
 {
   "functions": {
     "api/generate": {
-      "maxDuration": 60,
-      "runtime": "@vercel/node@3"
+      "maxDuration": 60
     }
   },
   "env": {
