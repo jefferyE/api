@@ -2,13 +2,18 @@ import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 
 // App Store Connect API 配置
-const APPLE_STORE_KIT_BASE_URL = process.env.APPLE_STORE_KIT_BASE_URL || '';
-const APPLE_STORE_KIT_SANDBOX_URL = process.env.APPLE_STORE_KIT_SANDBOX_URL || '';
+const APPLE_STORE_KIT_BASE_URL = process.env.APPLE_STORE_KIT_BASE_URL || 'https://api.storekit.itunes.apple.com';
+const APPLE_STORE_KIT_SANDBOX_URL = process.env.APPLE_STORE_KIT_SANDBOX_URL || 'https://api.storekit-sandbox.itunes.apple.com';
 
-const KEY_ID = process.env.APPLE_KEY_ID || '';
-const ISSUER_ID = process.env.APPLE_ISSUER_ID || '';
-const BUNDLE_ID = process.env.APPLE_BUNDLE_ID || '';
-const PRIVATE_KEY = process.env.APPLE_PRIVATE_KEY || ``;
+const KEY_ID = process.env.APPLE_KEY_ID || '58SQU6AZ3P';
+const ISSUER_ID = process.env.APPLE_ISSUER_ID || 'bf8d4031-ee94-4f62-9c2f-963cb0293ed2';
+const BUNDLE_ID = process.env.APPLE_BUNDLE_ID || 'com.mirror.BabyPic';
+const PRIVATE_KEY = process.env.APPLE_PRIVATE_KEY || `-----BEGIN PRIVATE KEY-----
+MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgqXDyiQDgPUyARb2x
+03XSifWHMHN8Vs9+m1mOCFZrd/6gCgYIKoZIzj0DAQehRANCAARVj3yOE+uGpYQo
+Vj7SLR5tjITz0odK1NeSk/0K+rupX8LyP8wCX//vEqVY77YGdS1vVwCS4nv/NPRF
+5T1e+pli
+-----END PRIVATE KEY-----`;
 
 /**
  * 生成 App Store Server API JWT

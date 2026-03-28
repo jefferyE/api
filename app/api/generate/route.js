@@ -9,9 +9,9 @@ import OpenAI from 'openai';
 // });
 
 // 环境变量
-const API_AUTH_TOKEN = process.env.API_AUTH_TOKEN || '';
-const SEEDREAM_API_BASE_URL = process.env.SEEDREAM_API_BASE_URL || '';
-const SEEDREAM_API_KEY = process.env.SEEDREAM_API_KEY || '';
+const API_AUTH_TOKEN = process.env.API_AUTH_TOKEN || 'xsd1dfd8caa-d7fc-4c7d-b4a1-5bf3c21bf168';
+const SEEDREAM_API_BASE_URL = process.env.SEEDREAM_API_BASE_URL || 'https://ark.cn-beijing.volces.com/api/v3';
+const SEEDREAM_API_KEY = process.env.SEEDREAM_API_KEY || '1dfd8caa-d7fc-4c7d-b4a1-5bf3c21bf168';
 
 // OpenAI 实例
 const client = new OpenAI({
@@ -31,6 +31,16 @@ const createResponse = (statusCode, data) => {
       'Access-Control-Allow-Headers': 'Content-Type, x-auth-token',
     },
   });
+};
+
+// File 转 base64
+const fileToBase64 = async (file) => {
+  const bytes = await file.arrayBuffer();
+  const buffer = Buffer.from(bytes);
+  const base64 = buffer.toString('base64');
+  // 根据 mimeType 添加前缀
+  const mimeType = file.type || 'image/png';
+  return `data:${mimeType};base64,${base64}`;
 };
 
 // 处理 POST 请求
@@ -63,11 +73,19 @@ export async function POST(request) {
       return createResponse(400, { code: 400, error: 'prompt 不能为空' });
     }
 
+    // File 对象数组转 base64 数组
+    const _image = await Promise.all(
+      image.map(file => fileToBase64(file))
+    );
+
+    console.log('[generate] _image:', _image);
+
     // 调用生图 API
     const response = await client.images.generate({
       model: 'doubao-seedream-4-5-251128',
+      // model: 'seedream-5-0-260128',
       prompt: prompt,
-      image: image,
+      image: _image,
       watermark: false,
       size: '2K',
       response_format: 'b64_json',
