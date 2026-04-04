@@ -62,7 +62,7 @@ function getAppStoreHeaders() {
 async function getTransaction(transactionId) {
   // 先尝试沙盒环境
   try {
-    const result = await fetchTransaction(transactionId, true);
+    const result = await fetchTransaction(transactionId, false);
     return { ...result, environment: 'Sandbox' };
   } catch (error) {
     console.log('查询交易失败:', error);
